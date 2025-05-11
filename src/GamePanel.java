@@ -35,19 +35,29 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         archivo = new ArchivoJuego("progreso.txt");
 
         entidades.add(new Plataforma(0, 640, 1380, 20, 10000000));//suelo
-       entidades.add(new Techo(0, 0, 1380, 1, 1000000));//techo
+        entidades.add(new Techo(0, 0, 1380, 1, 1000000));//techo
         entidades.add(new Pared(0, 0, 1, 640, 1000000));//pared izquierda
         entidades.add(new Pared(1380, 0, 10, 640, 1000000));//pared derecha
         entidades.add(new Plataforma(200, 450, 120, 20, 1000000));//plataforma chica
 
-            entidades.add(new EnemigoTerrestre(450, 540, 40, 40, "SpriteEnemigo.png", 100));
 
-        entidades.add(new EnemigoVolador(500, 300, 40, 40, 100));
+        for (int i = 0; i < 10; i++) {
+            int x = 1300;
+            int y = 0 + i * 60;
+            entidades.add(new EnemigoTerrestre(x, y, 40, 40, "SpriteEnemigo.png", 100));
+        }
 
         entidades.add(new itemMunicion(600,10,25,25,90));
-
+        entidades.add(new itemMunicion(600,580,25,25,90));
+        entidades.add(new itemMunicion(1300,150,25,25,90));
         //archivo.cargar(jugador);
         //archivo.cargar(jugador2);
+
+        for (int i = 0; i < 5; i++) {
+            int x = 100 + i * 100;
+            int y = 300;
+            entidades.add(new Plataforma(x, y, 50, 50, 99999)); // o crea una clase nueva como ObstaculoRect
+        }
 
         timer = new Timer(16, this);
         timer.start();
@@ -74,12 +84,22 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
             if (ent instanceof itemMunicion) {
                 itemMunicion item = (itemMunicion) ent;
-                if (jugador.colisionItem) {
-                    item.actualizar();
-                    System.out.println("Colisión detectada!");
 
+                if (jugador.getRect().intersects(item.getRect())) {
+                    jugador.setMunicion(jugador.getMunicion() + 10);
+                    entidades.remove(ent);
+                    i--;
+                    continue;
+                }
+
+                if (jugador2.getRect().intersects(item.getRect())) {
+                    jugador2.setMunicion(jugador2.getMunicion() + 10);
+                    entidades.remove(ent);
+                    i--;
+                    continue;
                 }
             }
+
             if (ent instanceof Disparo) {
                 Disparo d = (Disparo) ent;
                 d.actualizar();
@@ -96,8 +116,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         repaint();
     }
-
-
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 

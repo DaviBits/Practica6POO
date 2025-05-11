@@ -15,7 +15,7 @@ public class Disparo extends Entidad{
 
     @Override
     public void dibujar(Graphics g) {
-        g.setColor(Color.BLUE);
+        g.setColor(Color.BLACK);
         g.fillRect(x, y, ancho, alto);
     }
     @Override
@@ -35,25 +35,39 @@ public class Disparo extends Entidad{
 
 
 
-    public void verificarColisiones(List<Entidad> entidades) {
+    public boolean verificarColisiones(List<Entidad> entidades) {
+        Entidad enemigoAEliminar = null;
+        boolean colision = false;
+
         for (Entidad e : entidades) {
             if (e instanceof Enemigo && getRect().intersects(e.getRect())) {
                 System.out.println("oa");
-                //remove(this);
+
                 if (e.getVida() > 0) {
                     System.out.println("colision");
                     e.bajarVida(20);
                     e.informarAtaque();
+                    colision = true;
                 }
-                if (e.getVida() == 0) {
-                    entidades.remove(e);
-                    entidades.remove(this);
-                    break;
+
+                if (e.getVida() <= 0) {
+                    enemigoAEliminar = e;
                 }
             }
-
         }
+
+        if (enemigoAEliminar != null) {
+            entidades.remove(enemigoAEliminar);
+        }
+
+        if (colision) {
+            entidades.remove(this); // eliminar el disparo tras colisión
+            return true;
+        }
+
+        return false;
     }
+
 
     public void eliminarDisparo(List<Entidad> entidades) {
         entidades.remove(this);
@@ -62,4 +76,6 @@ public class Disparo extends Entidad{
     public boolean haExpirado() {
         return System.currentTimeMillis() - tiempoCreado > 2000; // 2 segundos
     }
+
+
 }

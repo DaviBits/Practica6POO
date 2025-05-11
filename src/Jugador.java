@@ -7,6 +7,9 @@ import java.util.List;
 
 public class Jugador extends Entidad {
 
+    int municion = 10;
+    public boolean colisionItem = false;
+
     private int dy = 0;
     private boolean izquierda = false, derecha = false, enSuelo = true , disparado = false;
     private boolean arriba, abajo;
@@ -27,12 +30,14 @@ public class Jugador extends Entidad {
         this.atacando=false;
         this.disparando=false;
         try {
-            BufferedImage spriteSheet = ImageIO.read(new File(imagen)); // 🖼️ Tu spritesheet 24x8
-            frames = new BufferedImage[6]; // 3 frames de 8x8
 
-            for (int i = 0; i < 6; i++) {
-                frames[i] = spriteSheet.getSubimage(i * 32, 0, 32, 32); // Separa cada frame
-            }
+                BufferedImage spriteSheet = ImageIO.read(new File(imagen)); // 🖼️ Tu spritesheet 24x8
+                frames = new BufferedImage[6]; // 3 frames de 8x8
+
+                for (int i = 0; i < 6; i++) {
+                    frames[i] = spriteSheet.getSubimage(i * 32, 0, 32, 32); // Separa cada frame
+                }
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,6 +90,7 @@ public class Jugador extends Entidad {
             if (e instanceof Enemigo && getRect().intersects(e.getRect())) {
                 x = 250; y = 500; dy = 0;
             }
+
             if (e instanceof Pared && getRect().intersects(e.getRect())){
                 if(izquierda){
                     x = e.getRect().x + ancho;
@@ -96,11 +102,17 @@ public class Jugador extends Entidad {
             if (e instanceof Techo && getRect().intersects(e.getRect())){
                 y = e.getRect().y + alto;
             }
+
+            if( e instanceof itemMunicion && getRect().intersects(e.getRect())){
+                municion+=10;
+                System.out.println("jugador toco item" + municion);
+                colisionItem = true;
+            }
         }
     }
 
     public void dibujar(Graphics g) {
-        System.out.println("Estado: " + estado + " | Frame actual: " + frameActual);
+        //System.out.println("Estado: " + estado + " | Frame actual: " + frameActual);
 
         BufferedImage sprite = null;
         switch (estado) {
@@ -145,5 +157,12 @@ public void disparar(){
         estado = EstadoAnimacion.DISPARANDO;
         tiempoInicioDisparo = System.currentTimeMillis();
     }
+}
+
+public int getMunicion(){
+        return municion;
+}
+public void setMunicion(int municion) {
+        this.municion = municion;
 }
 }

@@ -18,7 +18,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
         //requestFocusInWindow();
         addKeyListener(this);
-
+        int xEnemigo = 0;
+        int yEnemigo = 0;
 
 
         try {
@@ -38,8 +39,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         entidades.add(new Pared(0, 0, 1, 640, 1000000));//pared izquierda
         entidades.add(new Pared(1380, 0, 10, 640, 1000000));//pared derecha
         entidades.add(new Plataforma(200, 450, 120, 20, 1000000));//plataforma chica
-        entidades.add(new EnemigoTerrestre(450, 540, 40, 40,"SpriteEnemigo.png", 100));
+
+            entidades.add(new EnemigoTerrestre(450, 540, 40, 40, "SpriteEnemigo.png", 100));
+
         entidades.add(new EnemigoVolador(500, 300, 40, 40, 100));
+
+        entidades.add(new itemMunicion(600,10,25,25,90));
 
         //archivo.cargar(jugador);
         //archivo.cargar(jugador2);
@@ -67,11 +72,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 enemigo.moverse(jugador.getX(), jugador2.getX(), jugador.getY(), jugador2.getY());
                 enemigo.actualizar();
             }
+            if (ent instanceof itemMunicion) {
+                itemMunicion item = (itemMunicion) ent;
+                if (jugador.colisionItem) {
+                    item.actualizar();
+                    System.out.println("Colisión detectada!");
 
+                }
+            }
             if (ent instanceof Disparo) {
                 Disparo d = (Disparo) ent;
                 d.actualizar();
-                d.verificarColisiones(entidades);
+                if(d.verificarColisiones(entidades)){
+                    remove(this);
+                }
 
                 if (d.haExpirado()) {
                     entidades.remove(i);
@@ -123,15 +137,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
 
         // Crear disparo
-
-        if (e.getKeyCode() == KeyEvent.VK_M) {
-            entidades.add(new Disparo(jugador.getX() + jugador.getAncho() / 2, jugador.getY() + jugador.getAlto() / 2, 10, 5,jugador.getIzquierda(), 1000));
+        if (e.getKeyCode() == KeyEvent.VK_M && jugador.municion > 0) {
+            entidades.add(new Disparo(jugador.getX() + jugador.getAncho()*2, jugador.getY() + jugador.getAlto(), 10, 5,jugador.getIzquierda(), 1000));
+            jugador.municion--;
         }
-
-        if (e.getKeyCode() == KeyEvent.VK_C) {
-            entidades.add(new Disparo(jugador2.getX() + jugador2.getAncho() / 2, jugador2.getY() + jugador2.getAlto() / 2, 10, 5,jugador2.getIzquierda(), 1000));
+        if (e.getKeyCode() == KeyEvent.VK_C && jugador2.municion > 0) {
+            entidades.add(new Disparo(jugador2.getX() + jugador2.getAncho()*2, jugador2.getY() + jugador2.getAlto(), 10, 5,jugador2.getIzquierda(), 1000));
+            jugador2.municion--;
         }
-
     }
 
     public void keyReleased(KeyEvent e) {
@@ -146,4 +159,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_D) jugador2.setDerecha(false);
     }
     public void keyTyped(KeyEvent e) {}
+
+
 }

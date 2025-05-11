@@ -19,11 +19,11 @@ public class EnemigoTerrestre extends Enemigo {
     public EnemigoTerrestre(int x, int y, int ancho, int alto,String imagen, int vida) {
         super(x, y, ancho, alto, vida);
         try {
-            BufferedImage spriteSheet = ImageIO.read(new File(imagen)); // 🖼️ Tu spritesheet 24x8
-            frames = new BufferedImage[2]; // 3 frames de 8x8
+            BufferedImage spriteSheet = ImageIO.read(new File(imagen));
+            frames = new BufferedImage[2];
 
             for (int i = 0; i < 2; i++) {
-                frames[i] = spriteSheet.getSubimage(i * 8, 0, 8, 8); // Separa cada frame
+                frames[i] = spriteSheet.getSubimage(i * 8, 0, 8, 8);
             }
 
         } catch (IOException e) {
@@ -51,24 +51,40 @@ public class EnemigoTerrestre extends Enemigo {
         }
         muriendo=false;
     }
+    public void verificarColisiones(List<Entidad> entidades) {
+        int distanciaMinima = 50;
 
-    public void moverse(int xJugador1, int xJugador2, int yJugador1, int yJugador2) {
-        if (this.framesEspera > 0) {
-           this.framesEspera--;
-            return;
+        for (Entidad e : entidades) {
+            if (e != this && e instanceof EnemigoTerrestre) {
+                int dx = this.x - e.x;
+                int dy = this.y - e.y;
+                double distancia = Math.sqrt(dx * dx + dy * dy);
+
+                if (distancia < distanciaMinima) {
+                    if (dx == 0 && dy == 0) {
+                        dx = 1;
+                    }
+                    double factor = 2 / distancia;
+                    this.x += (int)(dx * factor);
+                    this.y += (int)(dy * factor);
+                }
+            }
         }
+    }
+
+    public void moverse(int xJugador1, int xJugador2, int yJugador1, int yJugador2, List<Entidad> entidades) {
+      /*  if (this.framesEspera > 0) {
+            this.framesEspera--;
+            return;
+        }*/
+
+        verificarColisiones(entidades);
+
         double distanciaJugador1 = Math.sqrt(Math.pow(x - xJugador1, 2) + Math.pow(y - yJugador1, 2));
         double distanciaJugador2 = Math.sqrt(Math.pow(x - xJugador2, 2) + Math.pow(y - yJugador2, 2));
 
-        int objetivoX, objetivoY;
-
-        if (distanciaJugador1 <= distanciaJugador2) {
-            objetivoX = xJugador1;
-            objetivoY = yJugador1;
-        } else {
-            objetivoX = xJugador2;
-            objetivoY = yJugador2;
-        }
+        int objetivoX = (distanciaJugador1 <= distanciaJugador2) ? xJugador1 : xJugador2;
+        int objetivoY = (distanciaJugador1 <= distanciaJugador2) ? yJugador1 : yJugador2;
 
         if (x > objetivoX) x -= 2;
         else if (x < objetivoX) x += 2;
@@ -76,6 +92,7 @@ public class EnemigoTerrestre extends Enemigo {
         if (y > objetivoY) y -= 2;
         else if (y < objetivoY) y += 2;
     }
+
 
     @Override
     public void actualizar () {

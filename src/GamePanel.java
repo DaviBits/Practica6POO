@@ -68,7 +68,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         jugador.actualizar();
         jugador.verificarColisiones(entidades);
-
         jugador2.actualizar();
         jugador2.verificarColisiones(entidades);
 
@@ -79,7 +78,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             Entidad ent = entidades.get(i);
 
             if(ent instanceof EnemigoTerrestre enemigo){
-                enemigo.moverse(jugador.getX(), jugador2.getX(), jugador.getY(), jugador2.getY());
+                enemigo.moverse(jugador.getX(), jugador2.getX(), jugador.getY(), jugador2.getY(),entidades);
                 enemigo.actualizar();
             }
             if (ent instanceof itemMunicion) {

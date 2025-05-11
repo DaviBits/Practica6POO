@@ -7,7 +7,8 @@ import java.util.List;
 
 public class Jugador extends Entidad {
 
-    int municion = 10;
+    int municion = 15;
+    public boolean muerto = false;
     public boolean colisionItem = false;
     public boolean mirandoIzquierda = false;
     private int dy = 0;
@@ -83,12 +84,11 @@ public class Jugador extends Entidad {
         enSuelo = true;
         for (Entidad e : entidades) {
             if (e instanceof Plataforma && getRect().intersects(e.getRect())) {
-                y = e.getRect().y - alto;
-                dy = 0;
-                enSuelo = true;
+
             }
             if (e instanceof Enemigo && getRect().intersects(e.getRect())) {
-                x = 250; y = 500; dy = 0;
+                x = 1000;
+                y = 1000;
             }
 
             if (e instanceof Pared && getRect().intersects(e.getRect())){

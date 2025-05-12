@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         archivo = new ArchivoJuego("progreso.txt");
 
         entidades.add(new Plataforma(0, 640, 1380, 20, 10000000));//suelo
-        entidades.add(new Techo(0, 0, 1380, 1,"", 1000000));//techo
+        entidades.add(new Techo(0, 0, 1800, 1,"", 1000000));//techo
         entidades.add(new Pared(0, 0, 1, 640, 1000000));//pared izquierda
         entidades.add(new Pared(1380, 0, 10, 640,1000000));//pared derecha
         entidades.add(new Techo(255, 140, 140, 70, "mesas.png",99999));
@@ -46,7 +46,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         entidades.add(new Techo(610, 390, 159, 51, "BaseCimarronPixelartSinFondo.png",99999));
 
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             int x = 1300;
             int y = 0 + i * 60;
             entidades.add(new EnemigoTerrestre(x, y, 40, 40, "zombieSprite.png", 100));

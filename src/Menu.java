@@ -8,12 +8,15 @@ public class Menu extends JPanel {
 
     public Menu(JPanel contenedor, CardLayout layout) {
         imagenFondo= new ImageIcon("FondoMenu2.png").getImage();
-        setLayout(new GridBagLayout());
+        setLayout(null);
         setOpaque(false);
 
         JButton botonJugar=new JButton("JUGAR");
         JButton botonSalir=new JButton("SALIR");
         JButton botonCargar=new JButton("Cargar");
+
+        botonJugar.setBounds(10, 10, 50, 30);
+        add(botonJugar);
 
         botonJugar.setFont(new Font("Roboto",Font.BOLD, 24));
         botonSalir.setFont(new Font("Roboto",Font.BOLD, 24));
@@ -47,20 +50,6 @@ public class Menu extends JPanel {
             }
         });
 
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
-        panelBotones.setOpaque(false); // También transparente
-
-        panelBotones.add(botonJugar);
-        panelBotones.add(botonCargar);
-        panelBotones.add(botonSalir);
-
-        // Añadir ese panel centrado en Menu
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weighty = 1.0; // Espacio extra arriba
-        gbc.anchor = GridBagConstraints.PAGE_END; //;
-        add(panelBotones, gbc);
 
     }
     @Override

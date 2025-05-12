@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
@@ -23,45 +24,67 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 
         try {
-            fondo = new ImageIcon("fondobeta.png").getImage();
+            fondo = new ImageIcon("fondobeta3.png").getImage();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         jugador = new Jugador(50, 500, 40, 40, "DaviSprites3.png", 100);
-        jugador2 = new Jugador(55, 500, 40, 40, "DaviSprites3.png", 100);
+        jugador2 = new Jugador(55, 500, 40, 40, "PimiSprites.png", 100);
 
         entidades = new ArrayList<>();
         archivo = new ArchivoJuego("progreso.txt");
 
         entidades.add(new Plataforma(0, 640, 1380, 20, 10000000));//suelo
-       entidades.add(new Techo(0, 0, 1380, 1, 1000000));//techo
+        entidades.add(new Techo(0, 0, 1380, 1,"", 1000000));//techo
         entidades.add(new Pared(0, 0, 1, 640, 1000000));//pared izquierda
-        entidades.add(new Pared(1380, 0, 10, 640, 1000000));//pared derecha
-        entidades.add(new Plataforma(200, 450, 120, 20, 1000000));//plataforma chica
+        entidades.add(new Pared(1380, 0, 10, 640,1000000));//pared derecha
+        entidades.add(new Techo(255, 140, 140, 70, "mesas.png",99999));
+        entidades.add(new Techo(995, 140, 140, 70, "mesas.png",99999));
+        entidades.add(new Techo(255, 400, 140, 70, "mesas.png",99999));
+        entidades.add(new Techo(995, 400, 140, 70, "mesas.png",99999));
+        entidades.add(new Techo(610, 390, 159, 51, "BaseCimarronPixelartSinFondo.png",99999));
 
-            entidades.add(new EnemigoTerrestre(450, 540, 40, 40, "SpriteEnemigo.png", 100));
 
-        entidades.add(new EnemigoVolador(500, 300, 40, 40, 100));
+        for (int i = 0; i < 1; i++) {
+            int x = 1300;
+            int y = 0 + i * 60;
+            entidades.add(new EnemigoTerrestre(x, y, 40, 40, "zombieSprite.png", 100));
+        }
 
         entidades.add(new itemMunicion(600,10,25,25,90));
-
+        entidades.add(new itemMunicion(600,580,25,25,90));
+        entidades.add(new itemMunicion(1300,150,25,25,90));
         //archivo.cargar(jugador);
         //archivo.cargar(jugador2);
+
+//        for (int i = 0; i < 5; i++) {
+//            int x = 100 + i * 100;
+//            int y = 300;
+//            entidades.add(new Plataforma(x, y, 50, 50, 99999)); // o crea una clase nueva como ObstaculoRect
+//        }
 
         timer = new Timer(16, this);
         timer.start();
     }
 
+    public void aparecerBalas(){
+        Random rnd = new Random();
+
+        entidades.add(new itemMunicion(rnd.nextInt(1350),rnd.nextInt(630),25,25,90));
+    }
+
 
 
     public void actionPerformed(ActionEvent e) {
+        Random rnd = new Random();
         jugador.actualizar();
         jugador.verificarColisiones(entidades);
-
         jugador2.actualizar();
         jugador2.verificarColisiones(entidades);
-
+        if(rnd.nextInt(50)==1){
+            aparecerBalas();
+        }
 
 
 
@@ -69,17 +92,27 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             Entidad ent = entidades.get(i);
 
             if(ent instanceof EnemigoTerrestre enemigo){
-                enemigo.moverse(jugador.getX(), jugador2.getX(), jugador.getY(), jugador2.getY());
+                enemigo.moverse(jugador.getX(), jugador2.getX(), jugador.getY(), jugador2.getY(),entidades);
                 enemigo.actualizar();
             }
             if (ent instanceof itemMunicion) {
                 itemMunicion item = (itemMunicion) ent;
-                if (jugador.colisionItem) {
-                    item.actualizar();
-                    System.out.println("Colisión detectada!");
 
+                if (jugador.getRect().intersects(item.getRect())) {
+                    jugador.setMunicion(jugador.getMunicion() + 10);
+                    entidades.remove(ent);
+                    i--;
+                    continue;
+                }
+
+                if (jugador2.getRect().intersects(item.getRect())) {
+                    jugador2.setMunicion(jugador2.getMunicion() + 10);
+                    entidades.remove(ent);
+                    i--;
+                    continue;
                 }
             }
+
             if (ent instanceof Disparo) {
                 Disparo d = (Disparo) ent;
                 d.actualizar();
@@ -96,8 +129,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         repaint();
     }
-
-
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -138,11 +169,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         // Crear disparo
         if (e.getKeyCode() == KeyEvent.VK_M && jugador.municion > 0) {
-            entidades.add(new Disparo(jugador.getX() + jugador.getAncho()*2, jugador.getY() + jugador.getAlto(), 10, 5,jugador.getIzquierda(), 1000));
+            entidades.add(new Disparo(jugador.getX()+jugador.getAncho(), (jugador.getY()+jugador.getAlto()/2)-20, 10, 5,jugador.getIzquierda(), 1000));
             jugador.municion--;
         }
         if (e.getKeyCode() == KeyEvent.VK_C && jugador2.municion > 0) {
-            entidades.add(new Disparo(jugador2.getX() + jugador2.getAncho()*2, jugador2.getY() + jugador2.getAlto(), 10, 5,jugador2.getIzquierda(), 1000));
+            entidades.add(new Disparo(jugador2.getX()+jugador2.getAncho(), (jugador2.getY()+jugador2.getAlto()/2)-20, 10, 5,jugador2.getIzquierda(), 1000));
             jugador2.municion--;
         }
     }

@@ -15,34 +15,35 @@ public class EnemigoTerrestre extends Enemigo {
     private enum EstadoAnimacion { PARADO, MURIENDO };
     private EstadoAnimacion estado = EstadoAnimacion.PARADO;
     private int framesEspera = 600;
+    final int ESCALA = 2;
+    private boolean arriba, abajo, izquierda, derecha;
+
 
     public EnemigoTerrestre(int x, int y, int ancho, int alto,String imagen, int vida) {
-        super(x, y, ancho, alto, vida);
+        super(x, y, ancho*2, alto*2, vida);
         try {
-            BufferedImage spriteSheet = ImageIO.read(new File(imagen)); // 🖼️ Tu spritesheet 24x8
-            frames = new BufferedImage[2]; // 3 frames de 8x8
+            BufferedImage spriteSheet = ImageIO.read(new File(imagen));
+            frames = new BufferedImage[2];
 
             for (int i = 0; i < 2; i++) {
-                frames[i] = spriteSheet.getSubimage(i * 8, 0, 8, 8); // Separa cada frame
+                frames[i] = spriteSheet.getSubimage(i * 32, 0, 32, 32);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         frameActual=0;
+
+
+        this.arriba=false;
+        this.abajo=false;
+        this.izquierda=false;
+        this.derecha=false;
+
     }
 
     public void dibujar(Graphics g) {
-
-        BufferedImage sprite = null;
-        switch (estado) {
-            case PARADO->{sprite = frames[0];}
-            case MURIENDO->{sprite = frames[1];}
-        }
-        if (sprite != null) {
-            int escala = 3;
-            g.drawImage(sprite, x, y, ancho * escala, alto * escala, null);
-        }
+        g.drawImage(frames[frameActual], x, y, ancho, alto, null);
     }
 
     public void RecibirDaño(){
@@ -51,39 +52,80 @@ public class EnemigoTerrestre extends Enemigo {
         }
         muriendo=false;
     }
+    public void verificarColisiones(List<Entidad> entidades) {
+        int distanciaMinima = 50;
 
-    public void moverse(int xJugador1, int xJugador2, int yJugador1, int yJugador2) {
-        if (this.framesEspera > 0) {
-           this.framesEspera--;
-            return;
+        for (Entidad e : entidades) {
+            if (e != this && e instanceof EnemigoTerrestre) {
+                int dx = this.x - e.x;
+                int dy = this.y - e.y;
+                double distancia = Math.sqrt(dx * dx + dy * dy);
+
+                if (distancia < distanciaMinima) {
+                    if (dx == 0 && dy == 0) {
+                        dx = 1;
+                    }
+                    double factor = 2 / distancia;
+                    this.x += (int)(dx * factor);
+                    this.y += (int)(dy * factor);
+                }
+            }
+            if (e instanceof Techo && getRect().intersects(e.getRect())) {
+                Rectangle r = e.getRect();
+                if (arriba) {
+                    y = r.y + r.height; // Te chocaste por abajo
+                } else if (abajo) {
+                    y = r.y - alto; // Te chocaste por arriba
+                } else if (izquierda) {
+                    x = r.x + r.width; // Te chocaste por la izquierda
+                } else if (derecha) {
+                    x = r.x - ancho; // Te chocaste por la derecha
+                }
+            }
+
+
         }
+    }
+
+    public void moverse(int xJugador1, int xJugador2, int yJugador1, int yJugador2, List<Entidad> entidades) {
+      /*  if (this.framesEspera > 0) {
+            this.framesEspera--;
+            return;
+        }*/
+
+        verificarColisiones(entidades);
+
         double distanciaJugador1 = Math.sqrt(Math.pow(x - xJugador1, 2) + Math.pow(y - yJugador1, 2));
         double distanciaJugador2 = Math.sqrt(Math.pow(x - xJugador2, 2) + Math.pow(y - yJugador2, 2));
 
-        int objetivoX, objetivoY;
+        int objetivoX = (distanciaJugador1 <= distanciaJugador2) ? xJugador1 : xJugador2;
+        int objetivoY = (distanciaJugador1 <= distanciaJugador2) ? yJugador1 : yJugador2;
 
-        if (distanciaJugador1 <= distanciaJugador2) {
-            objetivoX = xJugador1;
-            objetivoY = yJugador1;
-        } else {
-            objetivoX = xJugador2;
-            objetivoY = yJugador2;
+        if (x > objetivoX) {
+            x -= 2;
+            izquierda=true;
+            derecha=false;
+        }else if (x < objetivoX){
+            x += 2;
+            derecha=true;
+            izquierda=false;
         }
 
-        if (x > objetivoX) x -= 2;
-        else if (x < objetivoX) x += 2;
-
-        if (y > objetivoY) y -= 2;
-        else if (y < objetivoY) y += 2;
+        if (y > objetivoY){
+            y -= 2;
+            arriba=true;
+            abajo=false;
+        } else if (y < objetivoY) {
+            y += 2;
+            abajo=true;
+            arriba=false;
+        }
     }
+
 
     @Override
     public void actualizar () {
-        if(parado){
-            estado = EstadoAnimacion.PARADO ;
-        }else{
-            estado= EstadoAnimacion.MURIENDO ;
-        }
+        frameActual=(frameActual + 1) % frames.length;
     }
 
 }

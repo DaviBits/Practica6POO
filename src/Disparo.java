@@ -22,10 +22,8 @@ public class Disparo extends Entidad{
     public void actualizar() {
         if (!direccion) {
             x += velocidad; // Mueve el disparo a la derecha
-            System.out.println("hola prueba");
         }else{
             x -= velocidad;//izquierda
-            System.out.println("hola prueba 2");
 
         }
     }

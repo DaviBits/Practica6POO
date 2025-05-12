@@ -7,9 +7,10 @@ import java.util.List;
 
 public class Jugador extends Entidad {
 
-    int municion = 10;
+    int  municion = 15;
+    public boolean muerto = false;
     public boolean colisionItem = false;
-
+    public boolean mirandoIzquierda = false;
     private int dy = 0;
     private boolean izquierda = false, derecha = false, enSuelo = true , disparado = false;
     private boolean arriba, abajo;
@@ -25,8 +26,9 @@ public class Jugador extends Entidad {
     private final long duracionAtaque = 300;
     private enum EstadoAnimacion { PARADO, CAMINANDO, DISPARANDO, ATACANDO };
     private EstadoAnimacion estado = EstadoAnimacion.PARADO;
+
     public Jugador(int x, int y, int ancho, int alto, String imagen, int vida) {
-        super(x, y, ancho, alto, vida);
+        super(x, y, ancho*3, alto*3, vida);
         this.atacando=false;
         this.disparando=false;
         try {
@@ -83,25 +85,34 @@ public class Jugador extends Entidad {
         enSuelo = true;
         for (Entidad e : entidades) {
             if (e instanceof Plataforma && getRect().intersects(e.getRect())) {
-                y = e.getRect().y - alto;
-                dy = 0;
-                enSuelo = true;
+                y-=10;
             }
             if (e instanceof Enemigo && getRect().intersects(e.getRect())) {
-                x = 250; y = 500; dy = 0;
+                x = 10;
+                y = 10;
             }
 
             if (e instanceof Pared && getRect().intersects(e.getRect())){
                 if(izquierda){
-                    x = e.getRect().x + ancho;
+                    x = e.getRect().x + 10;
                 }else{
                     x = e.getRect().x - ancho;
                 }
 
             }
-            if (e instanceof Techo && getRect().intersects(e.getRect())){
-                y = e.getRect().y + alto;
+            if (e instanceof Techo && getRect().intersects(e.getRect())) {
+                Rectangle r = e.getRect();
+                if (arriba) {
+                    y = r.y + r.height; // Te chocaste por abajo
+                } else if (abajo) {
+                    y = r.y - alto; // Te chocaste por arriba
+                } else if (izquierda) {
+                    x = r.x + r.width; // Te chocaste por la izquierda
+                } else if (derecha) {
+                    x = r.x - ancho; // Te chocaste por la derecha
+                }
             }
+
 
             if( e instanceof itemMunicion && getRect().intersects(e.getRect())){
                 municion+=10;
@@ -112,34 +123,49 @@ public class Jugador extends Entidad {
     }
 
     public void dibujar(Graphics g) {
-        //System.out.println("Estado: " + estado + " | Frame actual: " + frameActual);
-
         BufferedImage sprite = null;
         switch (estado) {
-            case PARADO->{sprite = frames[0];}
-            case CAMINANDO->{sprite = frames[frameActual];}
-            case DISPARANDO->{sprite = frames[4];}
-            case ATACANDO->{sprite = frames[5];}
+            case PARADO -> sprite = frames[0];
+            case CAMINANDO -> sprite = frames[frameActual];
+            case DISPARANDO -> sprite = frames[4];
+            case ATACANDO -> sprite = frames[5];
         }
+
         if (sprite != null) {
-            int escala = 3;
-            g.drawImage(sprite, x, y, ancho * escala, alto * escala, null);
+            int escala = 1;
+            Graphics2D g2d = (Graphics2D) g;
+
+            if (mirandoIzquierda) {
+                g2d.drawImage(sprite, x + ancho * escala, y, -ancho * escala, alto * escala, null);
+            } else {
+                g2d.drawImage(sprite, x, y, ancho * escala, alto * escala, null);
+            }
         }
     }
+
+
 
     public void saltar() {
        // if (enSuelo) dy = -15;
     }
 
-    public void setIzquierda(boolean b) { izquierda = b; }
-    public void setDerecha(boolean b) { derecha = b; }
+    public void setIzquierda(boolean b) {
+        izquierda = b;
+        if (b) mirandoIzquierda = true;
+    }
+
+    public void setDerecha(boolean b) {
+        derecha = b;
+        if (b) mirandoIzquierda = false;
+    }
+
     public void setArriba(boolean b){arriba=b;}
     public void setAbajo(boolean b){abajo =b;}
     public int getX() { return x; }
     public int getY() { return y; }
 
 public boolean getIzquierda() {
-        return izquierda;
+        return mirandoIzquierda;
     }
 
 
@@ -165,4 +191,7 @@ public int getMunicion(){
 public void setMunicion(int municion) {
         this.municion = municion;
 }
+
+
+
 }

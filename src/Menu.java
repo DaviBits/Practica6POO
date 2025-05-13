@@ -11,12 +11,35 @@ public class Menu extends JPanel {
         setLayout(null);
         setOpaque(false);
 
-        JButton botonJugar=new JButton("JUGAR");
-        JButton botonSalir=new JButton("SALIR");
-        JButton botonCargar=new JButton("Cargar");
+        JButton botonJugar=new JButton(new ImageIcon("botonJugar.png"));
+        JButton botonCargar=new JButton(new ImageIcon("botonCargar.png"));
+        JButton botonSalir=new JButton(new ImageIcon("BotonSalir.png"));
+        //JButton botonCargar=new JButton(new ImageIcon(getClass().getResource("/Imagenes/FiveCardDrawButton.png")));
 
-        botonJugar.setBounds(10, 10, 50, 30);
+        botonJugar.setBorderPainted(false);
+        botonJugar.setContentAreaFilled(false);
+        botonJugar.setFocusPainted(false);
+        botonJugar.setOpaque(false);
+
+        botonCargar.setBorderPainted(false);
+        botonCargar.setContentAreaFilled(false);
+        botonCargar.setFocusPainted(false);
+        botonCargar.setOpaque(false);
+
+        botonSalir.setBorderPainted(false);
+        botonSalir.setContentAreaFilled(false);
+        botonSalir.setFocusPainted(false);
+        botonSalir.setOpaque(false);
+
+        botonJugar.setBounds(370, 450, 240, 90);
+        botonCargar.setBounds(610, 450, 240, 90);
+        botonSalir.setBounds(850, 450, 240, 90);
+
+
+
         add(botonJugar);
+        add(botonCargar);
+        add(botonSalir);
 
         botonJugar.setFont(new Font("Roboto",Font.BOLD, 24));
         botonSalir.setFont(new Font("Roboto",Font.BOLD, 24));
@@ -36,12 +59,15 @@ public class Menu extends JPanel {
             }
         });
 
+
         botonSalir.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
+
+
 
         botonCargar.addActionListener(new ActionListener(){
             @Override

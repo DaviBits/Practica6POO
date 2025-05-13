@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         archivo = new ArchivoJuego("progreso.txt");
 
         entidades.add(new Plataforma(0, 640, 1380, 20, 10000000));//suelo
-        entidades.add(new Techo(0, 0, 1380, 1,"", 1000000));//techo
+        entidades.add(new Techo(0, 0, 1800, 1,"", 1000000));//techo
         entidades.add(new Pared(0, 0, 1, 640, 1000000));//pared izquierda
         entidades.add(new Pared(1380, 0, 10, 640,1000000));//pared derecha
         entidades.add(new Techo(255, 140, 140, 70, "mesas.png",99999));
@@ -46,7 +46,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         entidades.add(new Techo(610, 390, 159, 51, "BaseCimarronPixelartSinFondo.png",99999));
 
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             int x = 1300;
             int y = 0 + i * 60;
             entidades.add(new EnemigoTerrestre(x, y, 40, 40, "zombieSprite.png", 100));
@@ -85,9 +85,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         if(rnd.nextInt(50)==1){
             aparecerBalas();
         }
-
-
-
         for (int i = 0; i < entidades.size(); i++) {
             Entidad ent = entidades.get(i);
 
@@ -125,6 +122,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     i--;
                 }
             }
+        }
+
+        if(eliminaronAlosZombies()){
+            timer.stop();
+            mostrarPantallaVictoria();
+        }else if(estanEliminados()){
+            timer.stop();
+            mostrarPantallaDerrota();
         }
 
         repaint();
@@ -176,6 +181,38 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             entidades.add(new Disparo(jugador2.getX()+jugador2.getAncho(), (jugador2.getY()+jugador2.getAlto()/2)-20, 10, 5,jugador2.getIzquierda(), 1000));
             jugador2.municion--;
         }
+    }
+
+    public boolean estanEliminados(){
+        return jugador.getX() > 1380 && jugador2.getX() > 1380;
+    }
+
+    private void mostrarPantallaDerrota() {
+        JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
+        ventana.setContentPane(new MensajePerdieron());
+        ventana.revalidate();
+    }
+
+    private void mostrarPantallaVictoria(){
+        JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(this);
+        ventana.setContentPane(new MensajeGanaron());
+        ventana.revalidate();
+    }
+
+    public boolean eliminaronAlosZombies(){
+        int zombiesEliminados=0;
+        for (Entidad ent : entidades) {
+            if (ent instanceof EnemigoTerrestre) {
+                System.out.println("quedan enemigos");
+                System.out.println("enemigo X "+ent.getX()+" Enemigo Y: "+ ent.getY()+ " vida:" +ent.getVida());
+                return false;
+//               if(!(ent.getX()>=0&&ent.getX()<=1380)){
+//                   zombiesEliminados++;
+//                   System.out.println("zombbies eliminados: "+zombiesEliminados);
+//               }
+            }
+        }
+        return true;
     }
 
     public void keyReleased(KeyEvent e) {

@@ -15,7 +15,7 @@ public class PantallaDeInicio extends JPanel {
             public void run() {
                 layout.show(contenedor, "menu");
             }
-        }, 5000);
+        }, 3000);
 
     }
 

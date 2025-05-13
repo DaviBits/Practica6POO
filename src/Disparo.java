@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Iterator;
 import java.util.List;
 
 public class Disparo extends Entidad{
@@ -34,36 +35,30 @@ public class Disparo extends Entidad{
 
 
     public boolean verificarColisiones(List<Entidad> entidades) {
-        Entidad enemigoAEliminar = null;
         boolean colision = false;
-
-        for (Entidad e : entidades) {
-            if (e instanceof Enemigo && getRect().intersects(e.getRect())) {
-                System.out.println("oa");
+        Iterator<Entidad> it = entidades.iterator();
+        while (it.hasNext()) {
+            Entidad e = it.next();
+            if (e instanceof EnemigoTerrestre && getRect().intersects(e.getRect())) {
+                System.out.println("Colisión con enemigo");
 
                 if (e.getVida() > 0) {
-                    System.out.println("colision");
                     e.bajarVida(20);
-                    e.informarAtaque();
-                    colision = true;
                 }
 
-                if (e.getVida() <= 0) {
-                    enemigoAEliminar = e;
+                if (e.getVida() <= 20) {
+                    System.out.println("Eliminando enemigo");
+                    it.remove(); // elimina de forma segura
                 }
+                //it.remove();
+
+
+                return true;
             }
         }
 
-        if (enemigoAEliminar != null) {
-            entidades.remove(enemigoAEliminar);
-        }
 
-        if (colision) {
-            entidades.remove(this); // eliminar el disparo tras colisión
-            return true;
-        }
-
-        return false;
+        return colision;
     }
 
 

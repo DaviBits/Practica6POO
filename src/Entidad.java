@@ -27,6 +27,7 @@ public abstract class Entidad {
     public int getAncho() { return ancho; }
     public int getAlto() { return alto; }
     public int getVida(){return vida;}
-    public void bajarVida(int n){vida-=n;}
+    public void bajarVida(int n){this.vida-=n;}
     public boolean informarAtaque(){return true;}
+
 }

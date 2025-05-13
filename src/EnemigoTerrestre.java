@@ -20,7 +20,7 @@ public class EnemigoTerrestre extends Enemigo {
 
 
     public EnemigoTerrestre(int x, int y, int ancho, int alto,String imagen, int vida) {
-        super(x, y, ancho*2, alto*2, vida);
+        super(x, y, ancho*3, alto*3, vida);
         try {
             BufferedImage spriteSheet = ImageIO.read(new File(imagen));
             frames = new BufferedImage[2];
@@ -73,13 +73,13 @@ public class EnemigoTerrestre extends Enemigo {
             if (e instanceof Techo && getRect().intersects(e.getRect())) {
                 Rectangle r = e.getRect();
                 if (arriba) {
-                    y = r.y + r.height; // Te chocaste por abajo
+                    y =y+1; // Te chocaste por abajo
                 } else if (abajo) {
-                    y = r.y - alto; // Te chocaste por arriba
+                    y =y-1; // Te chocaste por arriba
                 } else if (izquierda) {
-                    x = r.x + r.width; // Te chocaste por la izquierda
+                    x = x+1; // Te chocaste por la izquierda
                 } else if (derecha) {
-                    x = r.x - ancho; // Te chocaste por la derecha
+                    x =  x-1; // Te chocaste por la derecha
                 }
             }
 

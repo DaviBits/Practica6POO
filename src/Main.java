@@ -22,8 +22,9 @@ public class Main {
         contenedor.add(juego, "juego");
 
         ventana.setContentPane(contenedor);
-        ventana.pack(); // ← se ajusta a los paneles internos
+        ventana.pack();
         ventana.setVisible(true);
         layout.show(contenedor, "logo");
+
     }
 }

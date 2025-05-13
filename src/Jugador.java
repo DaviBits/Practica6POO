@@ -88,8 +88,8 @@ public class Jugador extends Entidad {
                 y-=10;
             }
             if (e instanceof Enemigo && getRect().intersects(e.getRect())) {
-                x = 10;
-                y = 10;
+                x =9999999;
+                y =9999999;
             }
 
             if (e instanceof Pared && getRect().intersects(e.getRect())){
@@ -171,9 +171,15 @@ public boolean getIzquierda() {
 
 public void atacar(){
     if (!atacando) {
+
         atacando = true;
         estado = EstadoAnimacion.ATACANDO;
         tiempoInicioAtaque = System.currentTimeMillis();
+        if(izquierda){
+            x-=150;
+        }else{
+            x+=150;
+        }
     }
 }
 

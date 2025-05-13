@@ -50,12 +50,30 @@ public class Disparo extends Entidad{
                     System.out.println("Eliminando enemigo");
                     it.remove(); // elimina de forma segura
                 }
-                //it.remove();
+                it.remove();
+
+
+                return true;
+            }
+            if (e instanceof MegaZombie && getRect().intersects(e.getRect())) {
+                System.out.println("Colisión con enemigo");
+
+                if (e.getVida() > 0) {
+                    e.bajarVida(20);
+                }
+
+                if (e.getVida() <= 20) {
+                    System.out.println("Eliminando enemigo");
+                    it.remove(); // elimina de forma segura
+                }
+                it.remove();
 
 
                 return true;
             }
         }
+
+
 
 
         return colision;

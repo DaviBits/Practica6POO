@@ -12,9 +12,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private ArrayList<Entidad> entidades;
     private ArchivoJuego archivo;
     private Image fondo;
+    private boolean rondaDos;
 
 
     public GamePanel() {
+        rondaDos=false;
         setPreferredSize(new Dimension(1380, 640));
         setFocusable(true);
         //requestFocusInWindow();
@@ -124,12 +126,22 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        if(eliminaronAlosZombies()){
-            timer.stop();
-            mostrarPantallaVictoria();
-        }else if(estanEliminados()){
+        if(eliminaronAlosZombies()&&!rondaDos){
+            rondaDos=true;
+            for(int i=0; i<5; i++){
+                int x = 1300;
+                int y = 0 + i * 60;
+                entidades.add(new MegaZombie(x,y, 80, 80, "zombieSprite.png", 300));
+            }
+        }
+        if(estanEliminados()){
             timer.stop();
             mostrarPantallaDerrota();
+        }
+
+        if(eliminaronZombiesGrandes()&&rondaDos){
+            timer.stop();
+            mostrarPantallaVictoria();
         }
 
         repaint();
@@ -167,7 +179,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_C) jugador2.disparar();
 
         // Guardar
-        if (e.getKeyCode() == KeyEvent.VK_S) {
+        if (e.getKeyCode() == KeyEvent.VK_R) {
             archivo.guardar(jugador);
             archivo.guardar(jugador2);
         }
@@ -213,6 +225,24 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
         }
         return true;
+    }
+
+    public boolean eliminaronZombiesGrandes(){
+
+            int zombiesEliminados=0;
+            for (Entidad ent : entidades) {
+                if (ent instanceof MegaZombie) {
+                    System.out.println("quedan Mega enemigos");
+                    System.out.println("enemigo X "+ent.getX()+" Enemigo Y: "+ ent.getY()+ " vida:" +ent.getVida());
+                    return false;
+//               if(!(ent.getX()>=0&&ent.getX()<=1380)){
+//                   zombiesEliminados++;
+//                   System.out.println("zombbies eliminados: "+zombiesEliminados);
+//               }
+                }
+            }
+            return true;
+
     }
 
     public void keyReleased(KeyEvent e) {

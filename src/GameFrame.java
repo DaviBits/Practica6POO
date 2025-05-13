@@ -6,6 +6,7 @@ public class GameFrame extends JFrame {
         setTitle("Juego de Plataforma 2D");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setContentPane(new GamePanel());
+        setResizable(false);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);

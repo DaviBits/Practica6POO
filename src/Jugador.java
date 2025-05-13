@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Jugador extends Entidad {
 
-    int municion = 15;
+    int  municion = 15;
     public boolean muerto = false;
     public boolean colisionItem = false;
     public boolean mirandoIzquierda = false;
@@ -26,8 +26,9 @@ public class Jugador extends Entidad {
     private final long duracionAtaque = 300;
     private enum EstadoAnimacion { PARADO, CAMINANDO, DISPARANDO, ATACANDO };
     private EstadoAnimacion estado = EstadoAnimacion.PARADO;
+
     public Jugador(int x, int y, int ancho, int alto, String imagen, int vida) {
-        super(x, y, ancho, alto, vida);
+        super(x, y, ancho*3, alto*3, vida);
         this.atacando=false;
         this.disparando=false;
         try {
@@ -84,24 +85,34 @@ public class Jugador extends Entidad {
         enSuelo = true;
         for (Entidad e : entidades) {
             if (e instanceof Plataforma && getRect().intersects(e.getRect())) {
-
+                y-=10;
             }
             if (e instanceof Enemigo && getRect().intersects(e.getRect())) {
-                x = 1000;
-                y = 1000;
+                x = 10;
+                y = 10;
             }
 
             if (e instanceof Pared && getRect().intersects(e.getRect())){
                 if(izquierda){
-                    x = e.getRect().x + ancho;
+                    x = e.getRect().x + 10;
                 }else{
                     x = e.getRect().x - ancho;
                 }
 
             }
-            if (e instanceof Techo && getRect().intersects(e.getRect())){
-                y = e.getRect().y + alto;
+            if (e instanceof Techo && getRect().intersects(e.getRect())) {
+                Rectangle r = e.getRect();
+                if (arriba) {
+                    y = r.y + r.height; // Te chocaste por abajo
+                } else if (abajo) {
+                    y = r.y - alto; // Te chocaste por arriba
+                } else if (izquierda) {
+                    x = r.x + r.width; // Te chocaste por la izquierda
+                } else if (derecha) {
+                    x = r.x - ancho; // Te chocaste por la derecha
+                }
             }
+
 
             if( e instanceof itemMunicion && getRect().intersects(e.getRect())){
                 municion+=10;
@@ -121,7 +132,7 @@ public class Jugador extends Entidad {
         }
 
         if (sprite != null) {
-            int escala = 3;
+            int escala = 1;
             Graphics2D g2d = (Graphics2D) g;
 
             if (mirandoIzquierda) {

@@ -11,7 +11,7 @@ public class itemMunicion extends Entidad {
 
 
     public itemMunicion(int x, int y, int ancho, int alto, int vida) {
-        super(x, y, ancho, alto, vida);
+        super(x, y, ancho*2, alto*2, vida);
         try {
             imagen = ImageIO.read(new File("balasItem.png")); // Asegúrate de que "item.png" esté en la carpeta correcta
         } catch (IOException e) {
@@ -28,7 +28,7 @@ public class itemMunicion extends Entidad {
     @Override
     public void dibujar(Graphics g) {
         if (imagen != null) {
-            int escala = 2;
+            int escala = 1;
             g.drawImage(imagen, x, y, ancho * escala, alto * escala, null);
         } else {
             g.setColor(Color.BLACK);

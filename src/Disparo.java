@@ -35,48 +35,36 @@ public class Disparo extends Entidad{
 
 
     public boolean verificarColisiones(List<Entidad> entidades) {
+        Entidad enemigoAEliminar = null;
         boolean colision = false;
-        Iterator<Entidad> it = entidades.iterator();
-        while (it.hasNext()) {
-            Entidad e = it.next();
+
+        for (Entidad e : entidades) {
             if (e instanceof EnemigoTerrestre && getRect().intersects(e.getRect())) {
-                System.out.println("Colisión con enemigo");
+                System.out.println("oa");
 
                 if (e.getVida() > 0) {
-                    e.bajarVida(20);
+                    System.out.println("colision");
+                    e.bajarVida(10);
+                    e.informarAtaque();
+                    colision = true;
                 }
 
-                if (e.getVida() <= 20) {
-                    System.out.println("Eliminando enemigo");
-                    it.remove(); // elimina de forma segura
+                if (e.getVida() <= 0) {
+                    enemigoAEliminar = e;
                 }
-                it.remove();
-
-
-                return true;
-            }
-            if (e instanceof MegaZombie && getRect().intersects(e.getRect())) {
-                System.out.println("Colisión con enemigo");
-
-                if (e.getVida() > 0) {
-                    e.bajarVida(20);
-                }
-
-                if (e.getVida() <= 20) {
-                    System.out.println("Eliminando enemigo");
-                    it.remove(); // elimina de forma segura
-                }
-                it.remove();
-
-
-                return true;
             }
         }
 
+        if (enemigoAEliminar != null) {
+            entidades.remove(enemigoAEliminar);
+        }
 
+        if (colision) {
+            entidades.remove(this); // eliminar el disparo tras colisión
+            return true;
+        }
 
-
-        return colision;
+        return false;
     }
 
 

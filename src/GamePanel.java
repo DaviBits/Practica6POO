@@ -57,8 +57,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         entidades.add(new itemMunicion(600,10,25,25,90));
         entidades.add(new itemMunicion(600,580,25,25,90));
         entidades.add(new itemMunicion(1300,150,25,25,90));
-        //archivo.cargar(jugador);
-        //archivo.cargar(jugador2);
+        archivo.cargar(jugador, jugador2);
+
 
 //        for (int i = 0; i < 5; i++) {
 //            int x = 100 + i * 100;
@@ -184,8 +184,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         // Guardar
         if (e.getKeyCode() == KeyEvent.VK_R) {
-            archivo.guardar(jugador);
-            archivo.guardar(jugador2);
+            archivo.guardar(jugador, jugador2);
         }
 
         // Crear disparo
@@ -200,7 +199,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     public boolean estanEliminados(){
-        return jugador.muerto && jugador2.muerto;
+
+        if(jugador.getX()>1380&&jugador2.getX()>1380){
+            return true;
+        }
+        return false;
     }
 
     private void mostrarPantallaDerrota() {

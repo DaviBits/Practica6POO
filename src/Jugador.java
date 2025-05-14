@@ -199,7 +199,13 @@ public int getMunicion(){
 public void setMunicion(int municion) {
         this.municion = municion;
 }
+public void setX(int x){
+        this.x=x;
+}
 
+public void setY(int y){
+        this.y=y;
+    }
 
 
 }

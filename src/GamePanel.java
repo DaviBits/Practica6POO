@@ -51,7 +51,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         for (int i = 0; i < 10; i++) {
             int x = 1300;
             int y = 0 + i * 60;
-            entidades.add(new EnemigoTerrestre(x, y, 40, 40, "zombieSprite.png", 100));
+            entidades.add(new EnemigoTerrestre(x, y, 40, 40, "zombieSprite.png", 300));
         }
 
         entidades.add(new itemMunicion(600,10,25,25,90));
@@ -126,12 +126,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        if(eliminaronAlosZombies()&&!rondaDos){
-            rondaDos=true;
-            for(int i=0; i<5; i++){
-                int x = 1300;
-                int y = 0 + i * 60;
-                entidades.add(new MegaZombie(x,y, 80, 80, "zombieSprite.png", 300));
+        if(eliminaronAlosZombies()){
+            //rondaDos=true;
+            if(!rondaDos){
+                for(int i=0; i<5; i++){
+                    int x = 1300;
+                    int y = 0 + i * 60;
+                    entidades.add(new MegaZombie(x,y, 80, 80, "zombieSprite.png", 600));
+                }
+                rondaDos=true;
             }
         }
         if(estanEliminados()){
@@ -139,7 +142,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             mostrarPantallaDerrota();
         }
 
-        if (eliminaronZombiesGrandes() && rondaDos && (!jugador.muerto || !jugador2.muerto)) {
+        if (eliminaronZombiesGrandes() && rondaDos ) {
             timer.stop();
             mostrarPantallaVictoria();
         }
@@ -197,7 +200,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     public boolean estanEliminados(){
-        return jugador.getX() > 1380 && jugador2.getX() > 1380;
+        return jugador.muerto && jugador2.muerto;
     }
 
     private void mostrarPantallaDerrota() {
@@ -216,9 +219,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         int zombiesEliminados=0;
         for (Entidad ent : entidades) {
             if (ent instanceof EnemigoTerrestre) {
-                System.out.println("quedan enemigos");
+//                System.out.println("quedan enemigos");
                 System.out.println("enemigo X "+ent.getX()+" Enemigo Y: "+ ent.getY()+ " vida:" +ent.getVida());
-                return false;
+//                return false;
+                if(!(ent.getY()<=10&&ent.getY()>=0)){
+                    return false;
+                }
             }
         }
         return true;

@@ -38,7 +38,7 @@ public class Menu extends JPanel {
 
 
         add(botonJugar);
-        add(botonCargar);
+        //add(botonCargar);
         add(botonSalir);
 
         botonJugar.setFont(new Font("Roboto",Font.BOLD, 24));

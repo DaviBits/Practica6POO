@@ -32,40 +32,88 @@ public class Disparo extends Entidad{
         x-= velocidad;
     }
 
-
-
     public boolean verificarColisiones(List<Entidad> entidades) {
-        Entidad enemigoAEliminar = null;
         boolean colision = false;
-
-        for (Entidad e : entidades) {
+        Iterator<Entidad> it = entidades.iterator();
+        while (it.hasNext()) {
+            Entidad e = it.next();
             if (e instanceof EnemigoTerrestre && getRect().intersects(e.getRect())) {
-                System.out.println("oa");
+                System.out.println("Colisión con enemigo");
 
                 if (e.getVida() > 0) {
-                    System.out.println("colision");
                     e.bajarVida(10);
-                    e.informarAtaque();
-                    colision = true;
+
+                }
+
+                if (e.getVida() <= 10) {
+                    System.out.println("Eliminando enemigo");
+                    it.remove(); // elimina de forma segura
+                }
+                //it.remove();
+
+
+
+                return true;
+            }
+            if (e instanceof MegaZombie && getRect().intersects(e.getRect())) {
+                System.out.println("Colisión con enemigo");
+
+                if (e.getVida() > 0) {
+                    e.bajarVida(10);
                 }
 
                 if (e.getVida() <= 0) {
-                    enemigoAEliminar = e;
+                    System.out.println("Eliminando enemigo");
+                    it.remove(); // elimina de forma segura
                 }
+                //it.remove();
+
+
+                return true;
             }
         }
 
-        if (enemigoAEliminar != null) {
-            entidades.remove(enemigoAEliminar);
-        }
 
-        if (colision) {
-            entidades.remove(this); // eliminar el disparo tras colisión
-            return true;
-        }
 
-        return false;
+
+        return colision;
     }
+
+
+
+//    public boolean verificarColisiones(List<Entidad> entidades) {
+//        Entidad enemigoAEliminar = null;
+//        boolean colision = false;
+//
+//        for (Entidad e : entidades) {
+//            if (e instanceof EnemigoTerrestre && getRect().intersects(e.getRect())) {
+//                System.out.println("oa");
+//
+//                if (e.getVida() > 0) {
+//                    System.out.println("colision");
+//                    e.bajarVida(10);
+//                    e.informarAtaque();
+//                    colision = true;
+//                }
+//
+//                if (e.getVida() <= 10) {
+//                    enemigoAEliminar = e;
+//
+//                }
+//            }
+//        }
+//
+//        if (enemigoAEliminar != null) {
+//            entidades.remove(enemigoAEliminar);
+//        }
+//
+//        if (colision) {
+//            entidades.remove(this); // eliminar el disparo tras colisión
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
 
     public void eliminarDisparo(List<Entidad> entidades) {

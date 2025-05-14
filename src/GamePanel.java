@@ -84,7 +84,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         jugador.verificarColisiones(entidades);
         jugador2.actualizar();
         jugador2.verificarColisiones(entidades);
-        if(rnd.nextInt(50)==1){
+        if(rnd.nextInt(70)==1){
             aparecerBalas();
         }
         for (int i = 0; i < entidades.size(); i++) {
@@ -225,7 +225,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 //                System.out.println("quedan enemigos");
                 System.out.println("enemigo X "+ent.getX()+" Enemigo Y: "+ ent.getY()+ " vida:" +ent.getVida());
 //                return false;
-                if(!(ent.getY()<=10&&ent.getY()>=0)){
+                if(!(ent.getY()<=20&&ent.getY()>=0)){
                     return false;
                 }
             }

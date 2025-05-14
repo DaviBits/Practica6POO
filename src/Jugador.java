@@ -47,6 +47,7 @@ public class Jugador extends Entidad {
     }
 
     public void actualizar() {
+        if (muerto) return;
         if(arriba) y-=10;
         if (izquierda) x -= 10;
         if (derecha) x += 10;
@@ -88,6 +89,7 @@ public class Jugador extends Entidad {
                 y-=10;
             }
             if (e instanceof Enemigo && getRect().intersects(e.getRect())) {
+                muerto=true;
                 x =9999999;
                 y =9999999;
             }

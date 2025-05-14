@@ -139,10 +139,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             mostrarPantallaDerrota();
         }
 
-        if(eliminaronZombiesGrandes()&&rondaDos){
+        if (eliminaronZombiesGrandes() && rondaDos && (!jugador.muerto || !jugador2.muerto)) {
             timer.stop();
             mostrarPantallaVictoria();
         }
+
 
         repaint();
     }
@@ -218,10 +219,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 System.out.println("quedan enemigos");
                 System.out.println("enemigo X "+ent.getX()+" Enemigo Y: "+ ent.getY()+ " vida:" +ent.getVida());
                 return false;
-//               if(!(ent.getX()>=0&&ent.getX()<=1380)){
-//                   zombiesEliminados++;
-//                   System.out.println("zombbies eliminados: "+zombiesEliminados);
-//               }
             }
         }
         return true;
@@ -235,10 +232,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     System.out.println("quedan Mega enemigos");
                     System.out.println("enemigo X "+ent.getX()+" Enemigo Y: "+ ent.getY()+ " vida:" +ent.getVida());
                     return false;
-//               if(!(ent.getX()>=0&&ent.getX()<=1380)){
-//                   zombiesEliminados++;
-//                   System.out.println("zombbies eliminados: "+zombiesEliminados);
-//               }
                 }
             }
             return true;
